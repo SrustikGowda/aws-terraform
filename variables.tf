@@ -23,6 +23,7 @@ variable "environment" {
 
 variable "project_name" {
   type        = string
+  default     = "aws-terraform-project"
   description = "Project name for resource tagging and naming"
 }
 
