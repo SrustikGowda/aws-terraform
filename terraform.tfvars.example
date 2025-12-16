@@ -1,0 +1,28 @@
+# Example Terraform Variables File
+# Copy this file to terraform.tfvars and update with your values
+
+project_name = "my-terraform-project"
+
+aws_region = "us-east-1"
+
+environment = "dev"
+
+instance_type = "t2.micro"
+
+# IMPORTANT: Replace with your actual IP address for security
+# Format: YOUR_IP/32 (e.g., "203.0.113.0/32")
+# You can find your IP at: https://whatismyipaddress.com/
+allowed_ssh_cidr = "0.0.0.0/0"  # Change this to your IP/32 for better security
+
+enable_monitoring = true
+
+volume_size = 30
+
+volume_type = "gp3"
+
+# Optional: Specify a custom AMI ID (leave empty to use latest Ubuntu)
+# ami_id = "ami-0c55b159cbfafe1f0"
+
+# Optional: Specify an EC2 Key Pair name for SSH access
+# key_pair_name = "my-key-pair"
+
