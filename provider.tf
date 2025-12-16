@@ -12,10 +12,10 @@ terraform {
   # For local development, you can comment this out and use local state
   # NOTE: Replace YOUR_ACCOUNT_ID with your AWS account ID for unique bucket name
   backend "s3" {
-    bucket         = "terraform-state-bucket-386397333158"  # Add your account ID for uniqueness
+    bucket         = "terraform-state-bucket-386397333158" # Add your account ID for uniqueness
     key            = "ec2/terraform.tfstate"
     region         = "us-east-1"
-    dynamodb_table = "terraform-locks-386397333158"  # Add your account ID for uniqueness
+    dynamodb_table = "terraform-locks-386397333158" # Add your account ID for uniqueness
     encrypt        = true
   }
 }
