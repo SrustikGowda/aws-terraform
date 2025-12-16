@@ -17,6 +17,8 @@ on:
     paths:
       - '*.tf'
       - '*.tfvars'
+      - 'modules/**/*.tf'
+      - 'scripts/**/*.sh'
   workflow_dispatch:
     inputs:
       action:
