@@ -49,3 +49,6 @@ terraform.rc
 *.csv
 credentials.csv
 *credentials*
+dontcommit.txt
+*credentials*
+*.csv
