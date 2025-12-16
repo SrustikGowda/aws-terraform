@@ -151,20 +151,25 @@ Before you begin, ensure you have the following installed and configured:
 
 ### Backend Infrastructure (One-time Setup)
 
-Before using this Terraform configuration, you need to set up the S3 backend and DynamoDB table for state management:
+Before using this Terraform configuration, you need to set up the S3 backend and DynamoDB table for state management.
+
+**Important:** S3 bucket names must be globally unique. Use your AWS account ID to make it unique.
 
 ```bash
-# Create S3 bucket for Terraform state
-aws s3 mb s3://terraform-state-bucket --region us-east-1
+# Get your AWS account ID
+ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+
+# Create S3 bucket for Terraform state (with unique name)
+aws s3 mb s3://terraform-state-bucket-${ACCOUNT_ID} --region us-east-1
 
 # Enable versioning
 aws s3api put-bucket-versioning \
-  --bucket terraform-state-bucket \
+  --bucket terraform-state-bucket-${ACCOUNT_ID} \
   --versioning-configuration Status=Enabled
 
 # Enable encryption
 aws s3api put-bucket-encryption \
-  --bucket terraform-state-bucket \
+  --bucket terraform-state-bucket-${ACCOUNT_ID} \
   --server-side-encryption-configuration '{
     "Rules": [{
       "ApplyServerSideEncryptionByDefault": {
@@ -175,11 +180,20 @@ aws s3api put-bucket-encryption \
 
 # Create DynamoDB table for state locking
 aws dynamodb create-table \
-  --table-name terraform-locks \
+  --table-name terraform-locks-${ACCOUNT_ID} \
   --attribute-definitions AttributeName=LockID,AttributeType=S \
   --key-schema AttributeName=LockID,KeyType=HASH \
   --billing-mode PAY_PER_REQUEST \
   --region us-east-1
+
+# Wait for table to be active
+aws dynamodb wait table-exists --table-name terraform-locks-${ACCOUNT_ID}
+```
+
+**Note:** After creating the bucket, update `provider.tf` with your account ID in the bucket and table names, or use the setup script:
+
+```bash
+./setup-backend.sh
 ```
 
 ## 🚀 Quick Start
@@ -279,10 +293,12 @@ aws-terraform/
 ### Backend Configuration
 
 The backend is configured in `provider.tf` to use:
-- **S3 Bucket**: `terraform-state-bucket`
+- **S3 Bucket**: `terraform-state-bucket-386397333158` (includes account ID for uniqueness)
 - **State File**: `ec2/terraform.tfstate`
-- **DynamoDB Table**: `terraform-locks` (for state locking)
+- **DynamoDB Table**: `terraform-locks-386397333158` (for state locking)
 - **Region**: `us-east-1`
+
+**Important:** The bucket name includes your AWS account ID to ensure it's globally unique. Update `provider.tf` with your account ID if different.
 
 To use a different backend, modify the `backend "s3"` block in `provider.tf`.
 

@@ -6,8 +6,17 @@
 set -e
 
 REGION="${AWS_REGION:-us-east-1}"
-BUCKET_NAME="${TERRAFORM_STATE_BUCKET:-terraform-state-bucket}"
-TABLE_NAME="${TERRAFORM_LOCKS_TABLE:-terraform-locks}"
+
+# Get AWS account ID for unique bucket name
+ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text 2>/dev/null)
+
+if [ -z "$ACCOUNT_ID" ]; then
+  echo "❌ Could not get AWS account ID. Please ensure AWS credentials are configured."
+  exit 1
+fi
+
+BUCKET_NAME="${TERRAFORM_STATE_BUCKET:-terraform-state-bucket-${ACCOUNT_ID}}"
+TABLE_NAME="${TERRAFORM_LOCKS_TABLE:-terraform-locks-${ACCOUNT_ID}}"
 
 echo "🚀 Setting up Terraform backend infrastructure..."
 echo "Region: $REGION"
