@@ -334,16 +334,64 @@ The project includes a comprehensive CI/CD pipeline that:
 
 ### Setting Up GitHub Actions
 
-1. **Add AWS Credentials to GitHub Secrets:**
-   - Go to your repository → Settings → Secrets and variables → Actions
-   - Add the following secrets:
-     - `AWS_ACCESS_KEY_ID`: Your AWS access key
-     - `AWS_SECRET_ACCESS_KEY`: Your AWS secret key
+#### Step 1: Create AWS IAM User for GitHub Actions
 
-2. **Workflow Triggers:**
-   - **Push to main**: Automatically applies changes
-   - **Pull Request**: Runs plan and validation
-   - **Manual**: Use workflow_dispatch for manual runs
+1. **Create IAM User:**
+   ```bash
+   # Create IAM user
+   aws iam create-user --user-name github-actions-terraform
+   
+   # Create access key
+   aws iam create-access-key --user-name github-actions-terraform
+   ```
+
+2. **Attach Required Policies:**
+   ```bash
+   # Attach policies (or create custom policy with least privilege)
+   aws iam attach-user-policy \
+     --user-name github-actions-terraform \
+     --policy-arn arn:aws:iam::aws:policy/AmazonEC2FullAccess
+   
+   aws iam attach-user-policy \
+     --user-name github-actions-terraform \
+     --policy-arn arn:aws:iam::aws:policy/CloudWatchFullAccess
+   
+   aws iam attach-user-policy \
+     --user-name github-actions-terraform \
+     --policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess
+   
+   aws iam attach-user-policy \
+     --user-name github-actions-terraform \
+     --policy-arn arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
+   ```
+
+   **⚠️ Security Best Practice:** Create a custom IAM policy with only the minimum required permissions instead of using full access policies.
+
+#### Step 2: Add AWS Credentials to GitHub Secrets
+
+1. **Navigate to Repository Settings:**
+   - Go to your GitHub repository
+   - Click **Settings** → **Secrets and variables** → **Actions**
+
+2. **Add Required Secrets:**
+   - Click **New repository secret**
+   - Add the following secrets:
+     - **Name:** `AWS_ACCESS_KEY_ID`
+       - **Value:** Your AWS access key ID (from Step 1)
+     - **Name:** `AWS_SECRET_ACCESS_KEY`
+       - **Value:** Your AWS secret access key (from Step 1)
+
+3. **Verify Secrets:**
+   - Ensure both secrets are listed in the repository secrets
+   - Secrets are encrypted and only visible during workflow execution
+
+#### Step 3: Workflow Triggers
+
+- **Push to main**: Automatically applies changes
+- **Pull Request**: Runs plan and validation (requires secrets)
+- **Manual**: Use workflow_dispatch for manual runs
+
+**Note:** The workflow will now validate that secrets are configured before attempting to use AWS credentials, providing clear error messages if they're missing.
 
 ### Pipeline Stages
 

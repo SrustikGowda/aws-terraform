@@ -26,3 +26,8 @@ volume_type = "gp3"
 # Optional: Specify an EC2 Key Pair name for SSH access
 # key_pair_name = "my-key-pair"
 
+# Security settings
+# allow_http_public = true   # Allow HTTP from public internet
+# allow_https_public = true  # Allow HTTPS from public internet
+# enable_ebs_optimized = false  # Enable EBS optimization (only for supported instance types)
+

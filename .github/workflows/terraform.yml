@@ -82,6 +82,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Validate AWS Secrets
+        run: |
+          if [ -z "${{ secrets.AWS_ACCESS_KEY_ID }}" ] || [ -z "${{ secrets.AWS_SECRET_ACCESS_KEY }}" ]; then
+            echo "::error::AWS credentials not configured. Please set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY in repository secrets."
+            echo "::error::Go to Settings > Secrets and variables > Actions to configure them."
+            exit 1
+          fi
+          echo "✅ AWS secrets validated"
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
@@ -135,6 +144,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Validate AWS Secrets
+        run: |
+          if [ -z "${{ secrets.AWS_ACCESS_KEY_ID }}" ] || [ -z "${{ secrets.AWS_SECRET_ACCESS_KEY }}" ]; then
+            echo "::error::AWS credentials not configured. Please set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY in repository secrets."
+            echo "::error::Go to Settings > Secrets and variables > Actions to configure them."
+            exit 1
+          fi
+          echo "✅ AWS secrets validated"
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
@@ -184,6 +202,15 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Validate AWS Secrets
+        run: |
+          if [ -z "${{ secrets.AWS_ACCESS_KEY_ID }}" ] || [ -z "${{ secrets.AWS_SECRET_ACCESS_KEY }}" ]; then
+            echo "::error::AWS credentials not configured. Please set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY in repository secrets."
+            echo "::error::Go to Settings > Secrets and variables > Actions to configure them."
+            exit 1
+          fi
+          echo "✅ AWS secrets validated"
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3

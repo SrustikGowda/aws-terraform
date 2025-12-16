@@ -62,3 +62,21 @@ variable "key_pair_name" {
   description = "EC2 Key Pair name for SSH access (optional)"
 }
 
+variable "allow_http_public" {
+  type        = bool
+  default     = true
+  description = "Allow HTTP (port 80) access from public internet"
+}
+
+variable "allow_https_public" {
+  type        = bool
+  default     = true
+  description = "Allow HTTPS (port 443) access from public internet"
+}
+
+variable "enable_ebs_optimized" {
+  type        = bool
+  default     = false
+  description = "Enable EBS optimization (only supported on certain instance types)"
+}
+
