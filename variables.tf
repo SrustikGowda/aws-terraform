@@ -1,7 +1,7 @@
 variable "instance_type" {
   type        = string
-  default     = "t2.micro"
-  description = "EC2 instance type"
+  default     = "t3.micro"
+  description = "EC2 instance type (t3.micro is free tier eligible in us-east-1)"
 }
 
 variable "aws_region" {

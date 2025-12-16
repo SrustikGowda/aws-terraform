@@ -7,7 +7,7 @@ aws_region = "us-east-1"
 
 environment = "dev"
 
-instance_type = "t2.micro"
+instance_type = "t3.micro"  # Free tier eligible in us-east-1
 
 # IMPORTANT: Replace with your actual IP address for security
 # Format: YOUR_IP/32 (e.g., "203.0.113.0/32")
