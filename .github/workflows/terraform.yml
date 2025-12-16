@@ -16,6 +16,15 @@ on:
       - '*.tf'
       - '*.tfvars'
   workflow_dispatch:
+    inputs:
+      action:
+        description: 'Terraform action to perform'
+        required: true
+        type: choice
+        options:
+          - apply
+          - destroy
+        default: 'apply'
 
 env:
   TF_VERSION: "1.6.0"
@@ -135,7 +144,9 @@ jobs:
     name: Terraform Apply
     runs-on: ubuntu-latest
     needs: [terraform-lint, terraform-security-scan]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    if: |
+      (github.ref == 'refs/heads/main' && github.event_name == 'push') ||
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'apply')
     environment:
       name: production
       url: ${{ steps.apply.outputs.instance_url }}
@@ -197,7 +208,8 @@ jobs:
   terraform-destroy:
     name: Terraform Destroy
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' && github.event.inputs.destroy == 'true'
+    needs: [terraform-lint, terraform-security-scan]
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'destroy'
     
     steps:
       - name: Checkout code
