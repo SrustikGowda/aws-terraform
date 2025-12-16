@@ -1,6 +1,6 @@
 # Security Group for Web Server
 resource "aws_security_group" "web" {
-  name        = "${var.project_name}-web-sg"
+  name_prefix = "${var.project_name}-web-sg-"
   description = "Security group for web server - allows HTTP and SSH"
   vpc_id      = data.aws_vpc.default.id
 
@@ -90,9 +90,10 @@ resource "aws_security_group" "web" {
   }
 }
 
-# IAM Role for EC2 Instance
+# IAM Role for EC2 Instance (optional - only if IAM permissions are available)
 resource "aws_iam_role" "ec2_role" {
-  name = "${var.project_name}-ec2-role"
+  count = var.enable_iam_role ? 1 : 0
+  name  = "${var.project_name}-ec2-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -114,8 +115,9 @@ resource "aws_iam_role" "ec2_role" {
 
 # IAM Instance Profile
 resource "aws_iam_instance_profile" "ec2_profile" {
-  name = "${var.project_name}-ec2-profile"
-  role = aws_iam_role.ec2_role.name
+  count = var.enable_iam_role ? 1 : 0
+  name  = "${var.project_name}-ec2-profile"
+  role  = aws_iam_role.ec2_role[0].name
 
   tags = {
     Name = "${var.project_name}-ec2-profile"
@@ -129,7 +131,7 @@ resource "aws_instance" "web_server" {
   key_name      = var.key_pair_name != "" ? var.key_pair_name : null
 
   vpc_security_group_ids = [aws_security_group.web.id]
-  iam_instance_profile   = aws_iam_instance_profile.ec2_profile.name
+  iam_instance_profile   = var.enable_iam_role ? aws_iam_instance_profile.ec2_profile[0].name : null
 
   user_data = base64encode(file("${path.module}/user_data.sh"))
 

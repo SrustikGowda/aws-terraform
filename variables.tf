@@ -81,3 +81,9 @@ variable "enable_ebs_optimized" {
   description = "Enable EBS optimization (only supported on certain instance types)"
 }
 
+variable "enable_iam_role" {
+  type        = bool
+  default     = false
+  description = "Enable IAM role for EC2 instance (requires IAM permissions)"
+}
+
