@@ -8,13 +8,15 @@ terraform {
     }
   }
 
-  backend "s3" {
-    bucket         = "terraform-state-bucket"
-    key            = "ec2/terraform.tfstate"
-    region         = "us-east-1"
-    dynamodb_table = "terraform-locks"
-    encrypt        = true
-  }
+  # Using local backend for simplicity (for college projects)
+  # Uncomment the S3 backend below if you want to use remote state
+  # backend "s3" {
+  #   bucket         = "terraform-state-bucket"
+  #   key            = "ec2/terraform.tfstate"
+  #   region         = "us-east-1"
+  #   dynamodb_table = "terraform-locks"
+  #   encrypt        = true
+  # }
 }
 
 provider "aws" {
