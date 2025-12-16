@@ -8,6 +8,8 @@ on:
     paths:
       - '*.tf'
       - '*.tfvars'
+      - 'modules/**/*.tf'
+      - 'scripts/**/*.sh'
       - '.github/workflows/*.yml'
   pull_request:
     branches:
@@ -240,5 +242,5 @@ jobs:
         run: terraform init
 
       - name: Terraform Destroy
-        run: terraform destroy -auto-approve
+        run: terraform destroy -auto-approve -var="project_name=aws-terraform-project"
 
